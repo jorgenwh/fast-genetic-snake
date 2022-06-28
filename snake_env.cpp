@@ -7,193 +7,194 @@
 #include "snake_env.h"
 
 SnakeEnv::SnakeEnv(int size) {
-	this->size = size;
-	win_score = std::pow(size, 2) - 3;
+  this->size = size;
+  win_score = std::pow(size, 2) - 3;
 
-	std::random_device rdev;	
-	rng = new std::mt19937(rdev());
-	dist = new std::uniform_int_distribution<std::mt19937::result_type>(0, size - 1);
+  std::random_device rdev;	
+  rng = new std::mt19937(rdev());
+  dist = new std::uniform_int_distribution<std::mt19937::result_type>(0, size - 1);
 
-	head_direction = ((*dist)(*rng)) % 4;
-	tail_direction = head_direction;
+  head_direction = ((*dist)(*rng)) % 4;
+  tail_direction = head_direction;
 
-	initialize_snake();
-	set_food();
+  initialize_snake();
+  set_food();
 }
 
 SnakeEnv::~SnakeEnv() {
-	delete rng;
-	delete dist;
+  delete rng;
+  delete dist;
 }
 
 observation *SnakeEnv::step(int action) {
-	if (is_backwards(action)) { action = head_direction; }
+  if (is_backwards(action)) { action = head_direction; }
 
-	head_direction = action;
+  head_direction = action;
 
-	coord new_head_pos = {(*snake.begin()).x + directions[action].x, (*snake.begin()).y + directions[action].y};
-	float reward = -0.01f;
+  coord new_head_pos = {(*snake.begin()).x + directions[action].x, (*snake.begin()).y + directions[action].y};
+  float reward = -0.01f;
 
-	if (is_valid(new_head_pos)) {
-		snake.push_front(new_head_pos);
+  if (is_valid(new_head_pos)) {
+    snake.push_front(new_head_pos);
 
-		if (new_head_pos == food) {
-			reward = 1;
-			score++;
-			steps_since_food = 0;
-			set_food();
-			if (score == win_score) {
-				flag = FLAG_WON;
-			}
-		}
-		else {
-			snake.pop_back();
-			steps_since_food++;
+    if (new_head_pos == food) {
+      reward = 1;
+      score++;
+      steps_since_food = 0;
+      set_food();
+      if (score == win_score) {
+        flag = FLAG_WON;
+      }
+    }
+    else {
+      snake.pop_back();
+      steps_since_food++;
 
-			if (steps_since_food > std::pow(size, 2)) {
-				flag = FLAG_DEAD;
-			}
-		}
+      if (steps_since_food > std::pow(size, 2)) {
+        flag = FLAG_DEAD;
+      }
+    }
 
-		coord tail = *snake.end();
-		coord next_tail = *(snake.end() - 1);
-		int x_diff = next_tail.x - tail.x;
-		int y_diff = next_tail.y - tail.y;
+    coord tail = *snake.end();
+    coord next_tail = *(snake.end() - 1);
+    int x_diff = next_tail.x - tail.x;
+    int y_diff = next_tail.y - tail.y;
 
-		if (y_diff < 0) { tail_direction = 0; }
-		else if (y_diff > 0) { tail_direction = 2; }
-		else if (x_diff < 0) { tail_direction = 3; }
-		else if (x_diff > 0) { tail_direction = 1; }
-	}
-	else {
-		flag = FLAG_DEAD;
-		reward = -1;
-	}
-	steps++;
+    if (y_diff < 0) { tail_direction = 0; }
+    else if (y_diff > 0) { tail_direction = 2; }
+    else if (x_diff < 0) { tail_direction = 3; }
+    else if (x_diff > 0) { tail_direction = 1; }
+  }
+  else {
+    flag = FLAG_DEAD;
+    reward = -1;
+  }
 
-	observation *o = new observation();
-	o->state = get_state();
-	o->reward = reward;
-	o->flag = flag;
+  steps++;
 
-	return o;
+  observation *o = new observation();
+  o->state = get_state();
+  o->reward = reward;
+  o->flag = flag;
+
+  return o;
 }
 
 observation *SnakeEnv::reset() {
-	head_direction = ((*dist)(*rng)) % 4;
-	tail_direction = head_direction;
+  head_direction = ((*dist)(*rng)) % 4;
+  tail_direction = head_direction;
 
-	initialize_snake();
-	set_food();
+  initialize_snake();
+  set_food();
 
-	score = 0;
-	steps = 0;
-	steps_since_food = 0;
-	flag = FLAG_ALIVE;
+  score = 0;
+  steps = 0;
+  steps_since_food = 0;
+  flag = FLAG_ALIVE;
 
-	observation *o = new observation();
-	o->state = get_state();
-	o->reward = 0;
-	o->flag = flag;
+  observation *o = new observation();
+  o->state = get_state();
+  o->reward = 0;
+  o->flag = flag;
 
-	return o;
+  return o;
 }
 
 void SnakeEnv::print() {
-	for (int x = 1; x < size + 1; x++) {
-		std::cout << x << " ";
-	}
-	std::cout << "\n";
-	for (int y = 0; y < size; y++) {
-		for (int x = 0; x < size; x++) {
-			coord cur = {x, y};
-			std::string sym = "-";
+  for (int x = 1; x < size + 1; x++) {
+    std::cout << x << " ";
+  }
+  std::cout << "\n";
+  for (int y = 0; y < size; y++) {
+    for (int x = 0; x < size; x++) {
+      coord cur = {x, y};
+      std::string sym = "-";
 
-			if (cur == *snake.begin()) { sym = "h"; }
-			else if (std::find(snake.begin(), snake.end(), cur) != snake.end()) { sym = "x"; }
-			else if (cur == food) { sym = "o"; }
-					
-			std::cout << sym << " ";
-		}
-		std::cout << "\n";
-	}
+      if (cur == *snake.begin()) { sym = "h"; }
+      else if (std::find(snake.begin(), snake.end(), cur) != snake.end()) { sym = "x"; }
+      else if (cur == food) { sym = "o"; }
+        
+      std::cout << sym << " ";
+    }
+  std::cout << "\n";
+  }
 }
 
 void SnakeEnv::initialize_snake() {
-	if (!snake.empty()) { snake.clear(); }
+  if (!snake.empty()) { snake.clear(); }
 
-	coord head;
-	head.x = (((*dist)(*rng)) % (size - 4)) + 2;
-	head.y = (((*dist)(*rng)) % (size - 4)) + 2;
-	snake.push_back(head);
+  coord head;
+  head.x = (((*dist)(*rng)) % (size - 4)) + 2;
+  head.y = (((*dist)(*rng)) % (size - 4)) + 2;
+  snake.push_back(head);
 
-	coord dir = directions[head_direction];
-	coord b1, b2;
-	b1.x = head.x - dir.x;
-	b1.y = head.y - dir.y;
-	b2.x = head.x - dir.x*2;
-	b2.y = head.y - dir.y*2;
-	snake.push_back(b1);
-	snake.push_back(b2);
+  coord dir = directions[head_direction];
+  coord b1, b2;
+  b1.x = head.x - dir.x;
+  b1.y = head.y - dir.y;
+  b2.x = head.x - dir.x*2;
+  b2.y = head.y - dir.y*2;
+  snake.push_back(b1);
+  snake.push_back(b2);
 }
 
 void SnakeEnv::set_food() {
-	std::vector<coord> valid_positions;
-	for (int x = 0; x < size; x++) {
-		for (int y = 0; y < size; y++) {
-			coord cur;
-			cur.x = x;
-			cur.y = y;
-			if (std::find(snake.begin(), snake.end(), cur) == snake.end()) {
-				valid_positions.push_back(cur);
-			}
-		}
-	}
+  std::vector<coord> valid_positions;
+  for (int x = 0; x < size; x++) {
+    for (int y = 0; y < size; y++) {
+      coord cur;
+      cur.x = x;
+      cur.y = y;
+      if (std::find(snake.begin(), snake.end(), cur) == snake.end()) {
+        valid_positions.push_back(cur);
+      }
+    }
+  }
 
-	auto start = valid_positions.begin();
-	auto end = valid_positions.end();
-	std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
-	std::advance(start, dis(*rng));
-	food = *start;
+  auto start = valid_positions.begin();
+  auto end = valid_positions.end();
+  std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
+  std::advance(start, dis(*rng));
+  food = *start;
 }
 
 float *SnakeEnv::get_state() {
-	float *state = new float[32];
+  float *state = new float[32];
 
-	coord head = *snake.begin();
+  coord head = *snake.begin();
 
-	for (int i = 0; i < 8; i++) {
-		float _food, _body, steps_looked;
-		coord cur = head;
+  for (int i = 0; i < 8; i++) {
+    float _food, _body, steps_looked;
+    coord cur = head;
 
-		while (is_within_map(cur)) {
-			steps_looked++;
-			cur.x = cur.x + vision_directions[i].x;
-			cur.y = cur.y + vision_directions[i].y;
+    while (is_within_map(cur)) {
+      steps_looked++;
+      cur.x = cur.x + vision_directions[i].x;
+      cur.y = cur.y + vision_directions[i].y;
 
-			if (food == cur) { _food = 1; }
-			if (std::find(snake.begin(), snake.end(), cur) == snake.end()) { _body = 1; }
-		}
+      if (food == cur) { _food = 1; }
+      if (std::find(snake.begin(), snake.end(), cur) == snake.end()) { _body = 1; }
+    }
 
-		state[i*3] = 1.0 / steps_looked;
-		state[i*3 + 1] = _food;
-		state[i*3 + 2] = _body;
-	}
+    state[i*3] = 1.0 / steps_looked;
+    state[i*3 + 1] = _food;
+    state[i*3 + 2] = _body;
+  }
 
-	state[24 + head_direction] = 1;
-	state[28 + tail_direction] = 1;
+  state[24 + head_direction] = 1;
+  state[28 + tail_direction] = 1;
 
-	return state;
+  return state;
 }
 
 inline bool SnakeEnv::is_within_map(coord &pos) {
-	return (pos.x >= 0 && pos.y >= 0 && pos.x < size && pos.y < size);
+  return (pos.x >= 0 && pos.y >= 0 && pos.x < size && pos.y < size);
 }
 
 inline bool SnakeEnv::is_valid(coord &pos) {
-	return (is_within_map(pos) && std::find(snake.begin(), snake.end(), pos) == snake.end());
+  return (is_within_map(pos) && std::find(snake.begin(), snake.end(), pos) == snake.end());
 }
 
 inline bool SnakeEnv::is_backwards(int action) {
-	return std::abs(action - head_direction) == 2;
+  return std::abs(action - head_direction) == 2;
 }

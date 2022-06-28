@@ -7,11 +7,11 @@ inline void relu(float *x);
 
 class Net {
 public:
-	Net();
-	~Net();
+  Net();
+  ~Net();
 
-	float *forward(float *x);
+  float *forward(float *x);
 
 private:
-	float *w1, w2, w3;
+  float *w1, w2, w3;
 };
