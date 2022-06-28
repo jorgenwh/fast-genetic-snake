@@ -5,13 +5,10 @@
 inline void matmul(float *A, float *B, float *C, int Ar, int Bc);
 inline void relu(float *x);
 
-class Net {
-public:
+struct Net {
   Net();
+  Net(float *w1, float *w2, float *w3);
   ~Net();
-
   float *forward(float *x);
-
-private:
-  float *w1, w2, w3;
+  float *w1, *w2, *w3;
 };

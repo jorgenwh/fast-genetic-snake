@@ -19,10 +19,36 @@ inline void relu(float *x, int size) {
 }
 
 Net::Net() {
-  ;
+  w1 = new float[640];
+  w2 = new float[240];
+  w3 = new float[48];
+}
+
+Net::Net(float *w1, float *w2, float *w3) {
+  this->w1 = w1;
+  this->w2 = w2;
+  this->w3 = w3;
 }
 
 Net::~Net() {
-  ;
+  delete[] w1;
+  delete[] w2;
+  delete[] w3;
+}
+
+float *Net::forward(float *x) {
+  float *z1 = new float[20];
+  float *z2 = new float[12];
+  float *out = new float[4];
+
+  matmul(x, w1, z1, 32, 1, 20);
+  relu(z1, 20);
+  matmul(z1, w2, z2, 20, 1, 12);
+  relu(z2, 12);
+  matmul(z2, w3, out, 12, 1, 4);
+
+  delete[] z1;
+  delete[] z2;
+  return out;
 }
 
