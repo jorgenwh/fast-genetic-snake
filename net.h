@@ -9,6 +9,6 @@ struct Net {
   Net();
   Net(float *w1, float *w2, float *w3);
   ~Net();
-  float *forward(float *x);
+  int forward(float *x);
   float *w1, *w2, *w3;
 };

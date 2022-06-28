@@ -1,4 +1,5 @@
 #include <random>
+#include <limits>
 
 #include "net.h"
 
@@ -36,7 +37,7 @@ Net::~Net() {
   delete[] w3;
 }
 
-float *Net::forward(float *x) {
+int Net::forward(float *x) {
   float *z1 = new float[20];
   float *z2 = new float[12];
   float *out = new float[4];
@@ -47,8 +48,20 @@ float *Net::forward(float *x) {
   relu(z2, 12);
   matmul(z2, w3, out, 12, 1, 4);
 
+  int action = 0;
+  float max = -std::numeric_limits<float>::max();
+#pragma unroll
+  for (int i = 0; i < 4; i++) {
+    if (out[i] > max) {
+      max = out[i];
+      action = i;
+    }
+  }
+
   delete[] z1;
   delete[] z2;
-  return out;
+  delete[] out;
+
+  return action;
 }
 
