@@ -1,6 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
+#include <thread>
+#include <mutex>
 
 #include "snake_env.h"
 #include "net.h"
@@ -17,12 +20,19 @@ public:
   void start();
 
 private:
-  std::vector<Individual> population;
+  std::vector<Individual*> population;
 
   int snake_size;
   int num_children;
   int num_parents;
   int population_size;
 
+  std::mutex fetch_individual_mutex;
+  std::mutex count_individual_mutex;
+
   void evaluate_individuals();
+  void thread_worker();
+
+  Individual *fetch_individual();
+  void count_individual();
 };

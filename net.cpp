@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <limits>
 
@@ -50,7 +51,7 @@ int Net::forward(float *x) {
 
   int action = 0;
   float max = -std::numeric_limits<float>::max();
-#pragma unroll
+
   for (int i = 0; i < 4; i++) {
     if (out[i] > max) {
       max = out[i];

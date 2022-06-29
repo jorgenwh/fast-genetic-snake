@@ -6,6 +6,26 @@
 
 #include "snake_env.h"
 
+coord directions[4] = 
+{
+  {0, -1}, // NORTH 
+  {1, 0},  // EAST 
+  {0, 1},  // SOUTH 
+  {-1, 0}  // WEST 
+};
+
+coord vision_directions[8] = 
+{
+  {0, -1}, // NORTH
+  {1, -1}, // NORTH-EAST
+  {1, 0},	 // EAST
+  {1, 1},  // SOUTH-EAST
+  {0, 1},  // SOUTH
+  {-1, 1}, // SOUTH-WEST
+  {-1, 0}, // WEST
+  {-1, -1} // NORTH-WEST
+};
+
 SnakeEnv::SnakeEnv(int size) {
   this->size = size;
   win_score = std::pow(size, 2) - 3;
@@ -164,7 +184,7 @@ float *SnakeEnv::get_state() {
   coord head = *snake.begin();
 
   for (int i = 0; i < 8; i++) {
-    float _food, _body, steps_looked;
+    float _food, _body, steps_looked = 0;
     coord cur = head;
 
     while (is_within_map(cur)) {

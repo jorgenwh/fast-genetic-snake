@@ -32,25 +32,8 @@ struct coord {
   }
 };
 
-static coord directions[4] = 
-{
-  {0, -1}, // NORTH 
-  {1, 0},  // EAST 
-  {0, 1},  // SOUTH 
-  {-1, 0}  // WEST 
-};
-
-static coord vision_directions[8] = 
-{
-  {0, -1}, // NORTH
-  {1, -1}, // NORTH-EAST
-  {1, 0},	 // EAST
-  {1, 1},  // SOUTH-EAST
-  {0, 1},  // SOUTH
-  {-1, 1}, // SOUTH-WEST
-  {-1, 0}, // WEST
-  {-1, -1} // NORTH-WEST
-};
+extern coord directions[4]; 
+extern coord vision_directions[8];
 
 class SnakeEnv {
 public:
