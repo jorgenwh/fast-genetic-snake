@@ -9,11 +9,9 @@
 #include "functional.h"
 #include "ga.h"
 
-GA::GA(int snake_size, int num_parents, int num_children) {
+GA::GA(int snake_size, int population_size) {
   this->snake_size = snake_size;
-  this->num_parents = num_parents;
-  this->num_children = num_children;
-  population_size = num_parents + num_children;
+  this->population_size = population_size; 
 
   std::cout << "Initializing snake environments" << std::endl;
   for (int i = 0; i < NUM_THREADS; i++) {
@@ -36,23 +34,65 @@ GA::~GA() {
 }
 
 void GA::start() {
+  std::cout << "Evaluating population ..." << std::endl;
   evaluate_individuals();
 }
 
-void GA::evaluate_individual(Individual *ind) {
-  ;
+void GA::evaluate_individual(Individual *ind, SnakeEnv *env) {
+  observation *o = env->reset(); 
+
+  int action;
+
+  while (o->flag == FLAG_ALIVE) {
+    action = ind->act(o->state);
+
+    delete o;
+    o = env->step(action);
+  }
+  delete o;
+
+  float score = (float)env->get_score();
+  float steps = (float)env->get_steps();
+  ind->compute_fitness(score, steps);
 }
 
 void GA::evaluate_individuals() {
+  individuals_evaluated = 0;
+
   std::vector<std::thread> threads(NUM_THREADS);
   for (int i = 0; i < NUM_THREADS; i++) {
-    threads[i] = std::thread(&GA::thread_worker, this);
+    int id = i;
+    threads[i] = std::thread(&GA::thread_worker, this, std::ref(id));
   }
   for (auto &thread : threads) {
     if (thread.joinable()) { thread.join(); }
   }
 }
 
-void GA::thread_worker() {
-  std::cout << "Thread started" << std::endl;
+void GA::thread_worker(int id) {
+  std::cout << "Evaluator thread " << id << " started" << std::endl;
+
+  Individual *ind;
+  do {
+    ind = fetch_individual();
+    evaluate_individual(ind, envs[id]);
+    count_individual();
+  } while (ind != nullptr);
+}
+
+Individual *GA::fetch_individual() {
+  std::lock_guard<std::mutex> lock(evaluate_individual_mutex);
+  Individual *ind = nullptr;
+
+  if (individuals_evaluated < population_size) {
+    ind = population[individuals_evaluated];
+  }
+
+  return ind;
+}
+
+void GA::count_individual() {
+  std::lock_guard<std::mutex> lock(evaluate_individual_mutex);
+  individuals_evaluated++;
+  std::cout << "Individual " << individuals_evaluated << "/" << population_size << " evaluated" << std::endl;
 }

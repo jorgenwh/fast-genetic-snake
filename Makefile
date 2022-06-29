@@ -18,6 +18,6 @@ clean:
 	$(RM) snake $(OBJECTS)
 
 memcheck:
-	valgrind --leak-check=full --log-file=valgrind-out.txt ./snake
+	valgrind --leak-check=full --track-origins=yes --log-file=valgrind-out.txt ./snake
 	cat valgrind-out.txt
 	rm valgrind-out.txt

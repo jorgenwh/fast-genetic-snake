@@ -16,6 +16,8 @@ struct observation {
   float *state;
   float reward;
   int flag;
+
+  ~observation() { delete[] state; }
 };
 
 struct coord {
@@ -44,6 +46,8 @@ public:
   observation *reset();
 
   void print();
+  int get_score() { return score; }
+  int get_steps() { return steps; }
 
 private:
   int score = 0;

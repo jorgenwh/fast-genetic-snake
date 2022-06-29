@@ -10,11 +10,11 @@
 #include "individual.h"
 #include "functional.h"
 
-#define NUM_THREADS 4
+#define NUM_THREADS 1
 
 class GA {
 public:
-  GA(int snake_size, int num_parents, int num_children);
+  GA(int snake_size, int population_size);
   ~GA();
 
   void start();
@@ -27,14 +27,15 @@ private:
   int num_parents;
   int population_size;
 
-  std::mutex fetch_individual_mutex;
-  std::mutex count_individual_mutex;
+  std::mutex evaluate_individual_mutex;
 
   std::vector<SnakeEnv*> envs;
 
-  void evaluate_individual(Individual *ind);
+  int individuals_evaluated;
+
+  void evaluate_individual(Individual *ind, SnakeEnv *env);
   void evaluate_individuals();
-  void thread_worker();
+  void thread_worker(int id);
 
   Individual *fetch_individual();
   void count_individual();
