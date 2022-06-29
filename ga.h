@@ -30,6 +30,9 @@ private:
   std::mutex fetch_individual_mutex;
   std::mutex count_individual_mutex;
 
+  std::vector<SnakeEnv*> envs;
+
+  void evaluate_individual(Individual *ind);
   void evaluate_individuals();
   void thread_worker();
 
