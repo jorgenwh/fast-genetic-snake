@@ -2,10 +2,10 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <assert.h>
 
 #include "snake_env.h"
 #include "net.h"
-#include "individual.h"
 #include "functional.h"
 #include "ga.h"
 
@@ -13,56 +13,92 @@ GA::GA(int snake_size, int population_size) {
   this->snake_size = snake_size;
   this->population_size = population_size; 
 
-  std::cout << "Initializing snake environments" << std::endl;
-  for (int i = 0; i < NUM_THREADS; i++) {
-    SnakeEnv *env = new SnakeEnv(snake_size);
-    envs.push_back(env);
-  }
+  environments = new SnakeEnv*[NUM_THREADS];
+  for (int i = 0; i < NUM_THREADS; i++) { environments[i] = new SnakeEnv(snake_size); }
 
-  std::cout << "Initializing first generation of individuals" << std::endl;
-  for (int i = 0; i < population_size; i++) {
-    Individual *ind = new Individual();
-    population.push_back(ind);
-  }
+  population = new nnet*[population_size];
+  for (int i = 0; i < population_size; i++) { population[i] = create_nnet(); }
+
+  fitness_scores = new float[population_size];
 }
 
 GA::~GA() {
-  std::cout << "Deleting environments" << std::endl;
-  for (auto &env : envs) { delete env; }
-  std::cout << "Deleting population" << std::endl;
-  for (auto &ind : population) { delete ind; }
-}
-
-void GA::start() {
-  std::cout << "Evaluating population ..." << std::endl;
-  evaluate_individuals();
-}
-
-void GA::evaluate_individual(Individual *ind, SnakeEnv *env) {
-  observation *o = env->reset(); 
-
-  int action;
-
-  while (o->flag == FLAG_ALIVE) {
-    action = ind->act(o->state);
-
-    delete o;
-    o = env->step(action);
+  for (int i = 0; i < population_size; i++) {
+    destroy_params(population[i]);
+    delete population[i];
   }
-  delete o;
+  for (int i = 0; i < NUM_THREADS; i++) {
+    delete environments[i];
+  }
+  delete[] population;
+  delete[] fitness_scores;
+  delete[] environments;
+}
 
-  float score = (float)env->get_score();
-  float steps = (float)env->get_steps();
-  ind->compute_fitness(score, steps);
+void GA::start(int generations) {
+  evaluate_individuals();
+
+  for (int i = 0; i < generations; i++) {
+    update_population(); 
+  }
+}
+
+void GA::update_population() {
+  quicksort(population, fitness_scores, 0, population_size - 1);
+
+  // Delete the worst half of the population
+  int num_children = population_size / 2;
+  for (int i = 0; i < num_children; i++) {
+    destroy_params(population[i]);
+    delete population[i];
+  }
+
+  // Repopulate the population, randomly selecting parents from the remaining pool to create children 
+  float fitness_sum = 0;
+  float weights[population_size - num_children];
+  for (int i = num_children; i < population_size; i++) { fitness_sum += fitness_scores[i]; }
+  for (int i = num_children; i < population_size; i++) { weights[i - num_children] = fitness_scores[i] / fitness_sum; }
+
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_real_distribution<> dist(0.0f, 1.0f);
+
+  for (int i = 0; i < num_children; i++) {
+    nnet *p1, *p2;
+    float rand1 = dist(rng); 
+    float rand2 = dist(rng); 
+    float offset = 0;
+    bool p1_chosen = false;
+    bool p2_chosen = false;
+
+    for (int i = 0; i < population_size - num_children; i++) {
+      offset += weights[i];
+      if (rand1 < offset) {
+        p1 = population[i + population_size - num_children];
+        p1_chosen = true;
+      }
+      if (rand2 < offset) {
+        p2 = population[i + population_size - num_children];
+        p2_chosen = true;
+      }
+      if (p1_chosen && p2_chosen) { break; }
+    }
+
+    nnet *child = crossover(p1, p2);
+    mutate(child);
+
+    population[i] = child;
+  }
 }
 
 void GA::evaluate_individuals() {
-  individuals_evaluated = 0;
+  eval_counter = 0;
+  int ids[NUM_THREADS];
 
   std::vector<std::thread> threads(NUM_THREADS);
   for (int i = 0; i < NUM_THREADS; i++) {
-    int id = i;
-    threads[i] = std::thread(&GA::thread_worker, this, std::ref(id));
+    ids[i] = i;
+    threads[i] = std::thread(&GA::thread_worker, this, std::ref(ids[i]));
   }
   for (auto &thread : threads) {
     if (thread.joinable()) { thread.join(); }
@@ -70,29 +106,37 @@ void GA::evaluate_individuals() {
 }
 
 void GA::thread_worker(int id) {
-  std::cout << "Evaluator thread " << id << " started" << std::endl;
+  int eval_idx = fetch_individual_index();
 
-  Individual *ind;
-  do {
-    ind = fetch_individual();
-    evaluate_individual(ind, envs[id]);
-    count_individual();
-  } while (ind != nullptr);
-}
-
-Individual *GA::fetch_individual() {
-  std::lock_guard<std::mutex> lock(evaluate_individual_mutex);
-  Individual *ind = nullptr;
-
-  if (individuals_evaluated < population_size) {
-    ind = population[individuals_evaluated];
+  while (eval_idx < population_size) {
+    evaluate_individual(id, eval_idx);
+    eval_idx = fetch_individual_index();
   }
-
-  return ind;
 }
 
-void GA::count_individual() {
-  std::lock_guard<std::mutex> lock(evaluate_individual_mutex);
-  individuals_evaluated++;
-  std::cout << "Individual " << individuals_evaluated << "/" << population_size << " evaluated" << std::endl;
+int GA::fetch_individual_index() {
+  std::lock_guard<std::mutex> lock(eval_mutex);
+  eval_counter++;
+  return eval_counter - 1;
+}
+
+void GA::evaluate_individual(int thread_idx, int eval_index) {
+  SnakeEnv *env = environments[thread_idx];
+  nnet *net = population[eval_index];
+
+  observation *o = env->reset();  
+  int action;
+
+  while (o->flag == FLAG_ALIVE) {
+    action = forward(net, o->state);
+    delete o;
+    o = env->step(action);
+  }
+  delete o;
+
+  float score = (float)env->get_score();
+  float steps = (float)env->get_steps();
+  float fitness = compute_fitness(score, steps);
+
+  fitness_scores[eval_index] = fitness;
 }

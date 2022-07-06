@@ -1,0 +1,182 @@
+==40258== Memcheck, a memory error detector
+==40258== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==40258== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==40258== Command: ./snake
+==40258== Parent PID: 40257
+==40258== 
+==40258== Thread 2:
+==40258== Conditional jump or move depends on uninitialised value(s)
+==40258==    at 0x10E901: forward(nnet*, float*) (net.cpp:94)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258==  Uninitialised value was created by a heap allocation
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E5C9: forward(nnet*, float*) (net.cpp:82)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258== 
+==40258== Conditional jump or move depends on uninitialised value(s)
+==40258==    at 0x10E91A: forward(nnet*, float*) (net.cpp:94)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258==  Uninitialised value was created by a heap allocation
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E5C9: forward(nnet*, float*) (net.cpp:82)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258== 
+==40258== Conditional jump or move depends on uninitialised value(s)
+==40258==    at 0x10E92B: forward(nnet*, float*) (net.cpp:94)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258==  Uninitialised value was created by a heap allocation
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E5C9: forward(nnet*, float*) (net.cpp:82)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258== 
+==40258== Use of uninitialised value of size 8
+==40258==    at 0x10D2FB: SnakeEnv::step(int) (snake_env.cpp:56)
+==40258==    by 0x10F4C4: GA::evaluate_individual(int, int) (ga.cpp:133)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258==  Uninitialised value was created by a heap allocation
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E5C9: forward(nnet*, float*) (net.cpp:82)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258== 
+==40258== Use of uninitialised value of size 8
+==40258==    at 0x10CE46: SnakeEnv::get_state() (snake_env.cpp:206)
+==40258==    by 0x10D35F: SnakeEnv::step(int) (snake_env.cpp:98)
+==40258==    by 0x10F4C4: GA::evaluate_individual(int, int) (ga.cpp:133)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258==  Uninitialised value was created by a heap allocation
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E5C9: forward(nnet*, float*) (net.cpp:82)
+==40258==    by 0x10F49B: GA::evaluate_individual(int, int) (ga.cpp:131)
+==40258==    by 0x10F58D: GA::thread_worker(int) (ga.cpp:112)
+==40258==    by 0x493ADE3: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==40258==    by 0x4BB8608: start_thread (pthread_create.c:477)
+==40258==    by 0x4CF2132: clone (clone.S:95)
+==40258== 
+==40258== Thread 1:
+==40258== Invalid read of size 4
+==40258==    at 0x10C489: operator()<std::mersenne_twister_engine<long unsigned int, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253> > (random.h:1862)
+==40258==    by 0x10C489: operator()<std::mersenne_twister_engine<long unsigned int, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253> > (random.h:1853)
+==40258==    by 0x10C489: single_point_crossover (functional.cpp:73)
+==40258==    by 0x10C489: crossover(nnet*, nnet*) (functional.cpp:92)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258==  Address 0x4e294c0 is 0 bytes after a block of size 192 alloc'd
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10ED95: create_nnet() (net.cpp:48)
+==40258==    by 0x10F1D9: GA::GA(int, int) (ga.cpp:20)
+==40258==    by 0x10A850: main (main.cpp:10)
+==40258== 
+==40258== Invalid read of size 4
+==40258==    at 0x10C492: operator()<std::mersenne_twister_engine<long unsigned int, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253> > (random.h:1862)
+==40258==    by 0x10C492: operator()<std::mersenne_twister_engine<long unsigned int, 32, 624, 397, 31, 2567483615, 11, 4294967295, 7, 2636928640, 15, 4022730752, 18, 1812433253> > (random.h:1853)
+==40258==    by 0x10C492: single_point_crossover (functional.cpp:73)
+==40258==    by 0x10C492: crossover(nnet*, nnet*) (functional.cpp:92)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258==  Address 0x4e294c0 is 0 bytes after a block of size 192 alloc'd
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10ED95: create_nnet() (net.cpp:48)
+==40258==    by 0x10F1D9: GA::GA(int, int) (ga.cpp:20)
+==40258==    by 0x10A850: main (main.cpp:10)
+==40258== 
+==40258== Invalid write of size 4
+==40258==    at 0x10C4C0: single_point_crossover (functional.cpp:74)
+==40258==    by 0x10C4C0: crossover(nnet*, nnet*) (functional.cpp:92)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258==  Address 0x4ed6210 is 0 bytes after a block of size 192 alloc'd
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10B962: crossover(nnet*, nnet*) (functional.cpp:82)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258== 
+==40258== Invalid write of size 4
+==40258==    at 0x10C53C: single_point_crossover (functional.cpp:75)
+==40258==    by 0x10C53C: crossover(nnet*, nnet*) (functional.cpp:92)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258==  Address 0x4ed6214 is 4 bytes after a block of size 192 alloc'd
+==40258==    at 0x483C583: operator new[](unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10B962: crossover(nnet*, nnet*) (functional.cpp:82)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+==40258== 
+--40258-- VALGRIND INTERNAL ERROR: Valgrind received a signal 11 (SIGSEGV) - exiting
+--40258-- si_code=1;  Faulting address: 0x0;  sp: 0x1008cade10
+
+valgrind: the 'impossible' happened:
+   Killed by fatal signal
+
+host stacktrace:
+==40258==    at 0x5804F830: ??? (in /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux)
+==40258==    by 0x5805187E: ??? (in /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux)
+==40258==    by 0x58005D57: ??? (in /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux)
+==40258==    by 0x580A7204: ??? (in /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux)
+==40258==    by 0x580F5FD4: ??? (in /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux)
+
+sched status:
+  running_tid=1
+
+Thread 1: status = VgTs_Runnable (lwpid 40258)
+==40258==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==40258==    by 0x10E537: create_nnet_from_params(float*, float*, float*) (net.cpp:64)
+==40258==    by 0x10BB08: crossover(nnet*, nnet*) (functional.cpp:97)
+==40258==    by 0x10F9ED: GA::update_population() (ga.cpp:87)
+==40258==    by 0x10FACA: GA::start(int) (ga.cpp:42)
+==40258==    by 0x10A865: main (main.cpp:13)
+client stack range: [0x1FFEFF5000 0x1FFF000FFF] client SP: 0x1FFEFF85C0
+valgrind stack range: [0x1008BAE000 0x1008CADFFF] top usage: 18696 of 1048576
+
+
+Note: see also the FAQ in the source distribution.
+It contains workarounds to several common problems.
+In particular, if Valgrind aborted or crashed after
+identifying problems in your program, there's a good chance
+that fixing those problems will prevent Valgrind aborting or
+crashing, especially if it happened in m_mallocfree.c.
+
+If that doesn't help, please report this bug to: www.valgrind.org
+
+In the bug report, send all the above text, the valgrind
+version, and what OS and version you are using.  Thanks.
+

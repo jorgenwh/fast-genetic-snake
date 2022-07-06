@@ -39,6 +39,8 @@ SnakeEnv::SnakeEnv(int size) {
 
   initialize_snake();
   set_food();
+
+  is_ready = true;
 }
 
 SnakeEnv::~SnakeEnv() {

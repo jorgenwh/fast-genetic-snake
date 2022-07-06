@@ -5,16 +5,14 @@
 #include <vector>
 
 #include "net.h"
-#include "individual.h"
 
-std::vector<Individual*> elitist_selection(std::vector<Individual*> &population, int n);
-std::vector<Individual*> roulette_wheel_selection(std::vector<Individual*> &population, int n);
+float compute_fitness(float score, float steps);
 
-Individual *crossover(Individual *mom, Individual *dad);
+int partition(nnet **population, float *fitness_scores, int lo, int hi);
+void quicksort(nnet **population, float *fitness_scores, int lo, int hi);
 
-float *simulated_binary_crossover(float *mom, float *dad, int size);
-float *single_point_crossover(float *mom, float *dad, int size);
+void simulated_binary_crossover(float *p1, float *p2, float *child);
+nnet *crossover(nnet *p1, nnet *p2);
 
-void mutate(Individual *ind);
-
-void gaussian_mutation(float *params);
+void gaussian_mutation(float *w);
+void mutate(nnet *child);

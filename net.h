@@ -1,14 +1,24 @@
 #pragma once
 
+#include <iostream>
 #include <random>
+#include <limits>
 
-inline void matmul(float *A, float *B, float *C, int Ar, int Bc);
-inline void relu(float *x);
+inline void matmul_l1(float *input, float *w, float *output);
+inline void matmul_l2(float *input, float *w, float *output);
+inline void matmul_l3(float *input, float *w, float *output);
+inline void relu_l1(float *x);
+inline void relu_l2(float *x);
 
-struct Net {
-  Net();
-  Net(float *w1, float *w2, float *w3);
-  ~Net();
-  int forward(float *x);
-  float *w1, *w2, *w3;
+struct nnet {
+  float *w1;
+  float *w2;
+  float *w3;
+  bool is_ready = false;
 };
+
+nnet *create_nnet();
+nnet *create_nnet_from_params(float *w1, float *w2, float *w3);
+void destroy_params(nnet *net);
+
+int forward(nnet *net, float *x);

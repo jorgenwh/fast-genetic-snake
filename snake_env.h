@@ -39,6 +39,7 @@ extern coord vision_directions[8];
 
 class SnakeEnv {
 public:
+  SnakeEnv() = default;
   SnakeEnv(int size);
   ~SnakeEnv();
 
@@ -48,6 +49,8 @@ public:
   void print();
   int get_score() { return score; }
   int get_steps() { return steps; }
+
+  bool is_ready = false;
 
 private:
   int score = 0;
